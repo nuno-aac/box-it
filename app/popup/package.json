@@ -1,0 +1,33 @@
+{
+  "name": "popup",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "prettier": "@untile/prettier-config",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build --emptyOutDir",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@untile/prettier-config": "^1.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^5.3.9",
+    "styled-tools": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.228",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/styled-components": "^5.1.26",
+    "@untile/eslint-config-typescript-react": "^1.0.0",
+    "@untile/stylelint-config-react": "^1.0.1",
+    "@vitejs/plugin-react": "^3.1.0",
+    "copyfiles": "^2.4.1",
+    "eslint": "^8.38.0",
+    "stylelint": "^15.4.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0"
+  }
+}

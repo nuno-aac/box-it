@@ -1,0 +1,1 @@
+body *,body *::after,body *::before{--layout-debug-index: 10;outline:1px solid hsl(calc(var(--layout-debug-index) * 10 * 1deg), 60%, 60%) !important}body * *,body *::after *,body *::before *{--layout-debug-index: 20}body * * *,body *::after * *,body *::before * *{--layout-debug-index: 30}body * * * *,body *::after * * *,body *::before * * *{--layout-debug-index: 40}

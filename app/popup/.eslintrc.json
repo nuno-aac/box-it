@@ -1,0 +1,4 @@
+{
+  "root": true,
+  "extends": ["@untile/eslint-config-typescript-react", "plugin:react/jsx-runtime"]
+}

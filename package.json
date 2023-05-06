@@ -1,0 +1,19 @@
+{
+  "author": "Nuno Cunha <naac.1999@gmail.com>",
+  "description": "A chromium extension for debugging layout",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "box-it",
+  "private": true,
+  "scripts": {
+    "build": "yarn workspace popup build  && yarn copyfiles -e app/popup/* -e **/*.scss -u 1 app/**/* dist",
+    "dev": "yarn watch \"yarn build\" ./app"
+  },
+  "version": "0.0.1",
+  "workspaces": [
+    "app/*"
+  ],
+  "devDependencies": {
+    "watch": "^1.0.2"
+  }
+}
