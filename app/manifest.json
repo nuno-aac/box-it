@@ -12,9 +12,13 @@
   },
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "action": {
     "default_popup": "popup/index.html"
+  },
+  "background": {
+    "service_worker": "service-worker/index.js"
   }
 }

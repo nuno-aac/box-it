@@ -6,7 +6,7 @@
   "name": "box-it",
   "private": true,
   "scripts": {
-    "build": "yarn workspace popup build  && yarn copyfiles -e app/popup/* -e **/*.scss -u 1 app/**/* dist",
+    "build": "yarn workspace service-worker build && yarn workspace popup build && yarn copyfiles -e app/popup/**/* -e app/service-worker/**/* -u 1 app/**/* dist",
     "dev": "yarn watch \"yarn build\" ./app"
   },
   "version": "0.0.1",
@@ -14,6 +14,7 @@
     "app/*"
   ],
   "devDependencies": {
+    "copyfiles": "^2.4.1",
     "watch": "^1.0.2"
   }
 }
