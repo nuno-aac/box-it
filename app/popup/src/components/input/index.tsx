@@ -31,6 +31,7 @@ const InputWrapper = styled.div`
 const StyledInput = styled.input`
   background: none;
   border: none;
+  color: white;
   margin: 0;
   padding: 10px 24px;
 
