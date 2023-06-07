@@ -1,6 +1,6 @@
 {
   "name": "service-worker",
-  "version": "0.0.1",
+  "version": "0.1",
   "description": "Service worker for the box it extension",
   "main": "index.ts",
   "author": "Nuno Cunha <naac.1999@gmail.com>",

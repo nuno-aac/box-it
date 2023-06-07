@@ -9,7 +9,7 @@
     "build": "yarn workspace service-worker build && yarn workspace popup build && yarn copyfiles -e app/popup/**/* -e app/service-worker/**/* -u 1 app/**/* dist",
     "dev": "yarn watch \"yarn build\" ./app"
   },
-  "version": "0.0.1",
+  "version": "0.1",
   "workspaces": [
     "app/*"
   ],
