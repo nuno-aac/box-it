@@ -1,7 +1,7 @@
 # Box it
 A chromium extension for debugging layouts using a border to check for alignments.
 
-![image](https://github.com/nuno-aac/box-it/assets/34559473/e58aa450-f55c-4fce-bdd3-97763eafd8aa)
+![image](https://github.com/nuno-aac/box-it/assets/34559473/dc7f5370-f297-483f-bf3a-a9439cd6cd44)
 
 
 I will not be publishing this to the chrome web store any time soon because i do not have 5$.
