@@ -2,6 +2,7 @@
  * Module dependecies
  */
 
+import { CssData } from '../types/css';
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 
 /**
@@ -9,8 +10,8 @@ import { UseMutationOptions, useMutation } from '@tanstack/react-query';
  */
 
 type Props = {
-  css: string;
-  id: number;
+  css: CssData;
+  id: number | string;
 };
 
 /**
@@ -29,6 +30,6 @@ async function addCss({ css, id }: Props) {
  * Export `useAddCss` function
  */
 
-export function useAddCss(options: UseMutationOptions<void, any, Props, any>) {
+export function useAddCss(options?: UseMutationOptions<void, any, Props, any>) {
   return useMutation(addCss, options);
 }

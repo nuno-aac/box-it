@@ -62,9 +62,9 @@ const StyledButton = styled.button`
   transition: 0.5s linear;
   transition-property: box-shadow;
   white-space: nowrap;
+  width: 100%;
 
-  :hover,
-  :focus {
+  :hover {
     box-shadow: rgba(20, 20, 20, 1) 5px 6px 25px -11px;
 
     & ${ButtonBorderWrapper} {

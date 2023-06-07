@@ -2,7 +2,7 @@
  * Module dependencies
  */
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { ifNotProp, ifProp } from "styled-tools";
 import DownOutlined from '@ant-design/icons/DownOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
@@ -14,6 +14,7 @@ import styled from "styled-components";
 
 type Props = {
   children: ReactNode;
+  closed?: boolean,
   header: ReactNode;
 }
 
@@ -40,49 +41,58 @@ export const InnerCollapse = styled.div`
  * CollapseHeader
  */
 
-export const CollapseHeader = styled.div<{ expanded: boolean }>`
+export const CollapseHeader = styled.div<{
+  closed?: boolean;
+  expanded: boolean;
+}>`
   display: grid;
   grid-column-gap: 8px;
   grid-template-columns: auto 1fr auto;
   padding: 4px 0;
   transition-property: opacity;
   transition: 0.4s linear;
+  cursor: pointer;
 
   .anticon svg {
     transition: transform 0.4s ease;
   }
 
-  ${ifNotProp(
-    'expanded',
-    `
-    opacity: 0.6;
-  `
-  )}
+  ${ifNotProp('expanded', `opacity: 0.6;`)}
+
+  ${ifProp('closed', `cursor: unset;`)}
 `;
 
 /**
  * Export `Collapse` component.
  */
 
-export const Collapse = ({ children, header }: Props) => {
+export const Collapse = ({ children, closed, header }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const expanded = useMemo(() => closed ? false : isOpen, [closed, isOpen])
+
+  useEffect(() => {
+    if(closed) {
+      setIsOpen(false)
+    }
+  }, [closed])
   
   return (
-    <>
+    <div>
       <CollapseHeader
-        expanded={isOpen}
+        closed={closed}
+        expanded={expanded}
         onClick={() => setIsOpen(prev => !prev)}
       >
         <SettingOutlined />
 
         {header}
 
-        <DownOutlined rotate={isOpen ? 180 : 0} />
+        <DownOutlined rotate={expanded ? 180 : 0} />
       </CollapseHeader>
 
-      <CollapseStyle expanded={isOpen}>
+      <CollapseStyle expanded={expanded}>
         <InnerCollapse>{children}</InnerCollapse>
       </CollapseStyle>
-    </>
+    </div>
   );
 }

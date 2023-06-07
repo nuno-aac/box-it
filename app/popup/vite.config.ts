@@ -6,6 +6,11 @@ export default defineConfig({
   base: './',
   build: {
     rollupOptions: {
+      onwarn: ({ code }) => {
+        if (code === 'MODULE_LEVEL_DIRECTIVE') {
+          return;
+        }
+      },
       output: {
         dir: '../../dist/popup',
         entryFileNames: 'popup.js'

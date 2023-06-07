@@ -1,14 +1,16 @@
 import { ButtonComponent } from '../../components/button/index';
 import { Collapse } from '../../components/collapse';
-import { InputField } from '../../components/input';
-import { useAddCss } from '../../state/add-css';
-import { useCallback } from 'react';
-import { useCssData } from '../../state/use-css-data';
-import { useRemoveCss } from '../../state/remove-css';
+import { CssData } from '../../types/css';
+import { CssFormData, SettingsForm } from './form';
+import { useAddCss } from '../../api/add-css-data';
+import { useCallback, useEffect } from 'react';
+import { useCssData } from '../../api/use-css-data';
+import { useForm } from 'react-hook-form';
+import { useRemoveCss } from '../../api/remove-css-data';
 import styled from 'styled-components';
 
 /**
- * `queryClient` constant.
+ * `Props` type.
  */
 
 type Props = {
@@ -20,11 +22,31 @@ type Props = {
  */
 
 const Wrapper = styled.div`
-  padding: 100px;
+  display: grid;
+  grid-row-gap: 16px;
+  padding: 20px;
+  width: 300px;
 `;
 
 export const AppContent = ({ activeTabId }: Props) => {
-  const { data: css, refetch } = useCssData(activeTabId);
+  const { data: cssData, refetch } = useCssData(activeTabId);
+  const form = useForm<CssFormData>({
+    defaultValues: cssData as CssData
+  });
+
+  const { handleSubmit, reset } = form;
+  const generateCss = useCallback(({ color, selector }: CssData) => {
+    const normalizedColor = color && color.length > 0 ? color : '#f00';
+    const normalizedSelector =
+      selector && selector.length > 0 ? selector : '*, *::after, *::before';
+
+    return `
+      ${normalizedSelector} {
+        outline: 1px dotted ${normalizedColor} !important;
+      }
+    `;
+  }, [])
+
   const { mutate: addCss } = useAddCss({
     onSuccess: () => refetch()
   });
@@ -32,7 +54,6 @@ export const AppContent = ({ activeTabId }: Props) => {
   const { mutate: removeCss } = useRemoveCss({
     onSuccess: () => refetch()
   });
-
 
   const injectCss = useCallback(async (newCss: string) => {
     await chrome.scripting.insertCSS({
@@ -43,65 +64,81 @@ export const AppContent = ({ activeTabId }: Props) => {
     });
   }, [activeTabId]);
 
-  const ejectCss = useCallback(async () => {
-    await chrome.scripting.removeCSS({
-      css: css ?? undefined,
-      target: {
-        tabId: activeTabId
-      }
-    });
-  }, [activeTabId, css]);
+  const ejectCss = useCallback(
+    async (cssToRemove: string) => {
+      await chrome.scripting.removeCSS({
+        css: cssToRemove ?? undefined,
+        target: {
+          tabId: activeTabId
+        }
+      });
+    },
+    [activeTabId]
+  );
 
-  const toggleDebug = useCallback(async () => {
-    const newCss = `
-      *,
-      *::after,
-      *::before {
-        outline: 1px dotted purple;
-      }
-    `;
+  const onSubmit = useCallback(async ({ color, selector }: CssFormData) => {
+    const normalizedColor = color && color.length > 0 ? color : '#f00';
+    const normalizedSelector = 
+      selector && selector.length > 0 ?  selector : '*, *::after, *::before';
+
+    const newCssData = {
+      color: normalizedColor,
+      selector: normalizedSelector
+    }
 
     try {
-      const storage = await chrome.storage.local.get();
-      const storageCss = storage?.[`${activeTabId}Css`];
-
-      if (storageCss) {
-        ejectCss()
-        removeCss(activeTabId);
-
-        return;
-      }
-
-      injectCss(newCss)
+      await injectCss(generateCss(newCssData))
       addCss({
-        css: newCss,
+        css: {
+          color,
+          selector
+        },
         id: activeTabId
       });
     } catch (error) {
-      ejectCss();
-      removeCss(activeTabId);
       // eslint-disable-next-line no-alert
       window?.alert(
         'There was a problem with the extension. Maybe try reloading the page?'
       );
     }
-  }, [activeTabId, addCss, ejectCss, injectCss, removeCss]);
+  }, [activeTabId, addCss, generateCss, injectCss]);
+
+  const onRemove = useCallback(async () => {
+      try {
+        await ejectCss(generateCss(cssData as CssData));
+        removeCss(activeTabId);
+      } catch (error) {
+        // eslint-disable-next-line no-alert
+        window?.alert(
+          'There was a problem with the extension. Maybe try reloading the page?'
+        );
+      }
+    },
+    [activeTabId, cssData, ejectCss, generateCss, removeCss]
+  );
+
+  useEffect(() => {
+    if(cssData) { 
+      reset(cssData);
+    }
+  }, [cssData, reset])
 
   return (
-    <div>
+    <>
       <Wrapper>
-        <Collapse header={'Settings'}>
-          <h1>{'Adasse'}</h1>
-
-          <InputField placeholder={'*'} />
+        <Collapse
+          closed={!!cssData}
+          header={`Settings${cssData ? ' (Unbox to edit)' : ''}`}
+        >
+          <SettingsForm form={form} />
         </Collapse>
 
-        <ButtonComponent onClick={toggleDebug}>
-          {`${css ? 'Unb' : 'B'}ox it`}
+        <ButtonComponent 
+          onClick={!cssData ? handleSubmit(onSubmit) : onRemove}
+        >
+          {!cssData ? 'Box it' : 'Unbox it'}
         </ButtonComponent>
       </Wrapper>
-
-      <div>{`${css}/${activeTabId}`}</div>
-    </div>
+    </>
   );
 };

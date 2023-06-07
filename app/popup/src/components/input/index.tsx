@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-import { HTMLProps, ReactElement, forwardRef } from 'react';
+import { HTMLProps, ReactElement, ReactNode, forwardRef } from 'react';
 import styled from 'styled-components';
 
 
@@ -11,7 +11,8 @@ import styled from 'styled-components';
  */
 
 type Props = HTMLProps<HTMLInputElement> & {
-  as?: undefined
+  as?: undefined;
+  icon?: ReactNode;
 }
 
 /**
@@ -21,8 +22,18 @@ type Props = HTMLProps<HTMLInputElement> & {
 const InputWrapper = styled.div`
   background-color: #505050;
   border-radius: 4px;
-  width: 100%;
-`
+  padding: 10px 16px;
+`;
+
+/**
+ * `ContentWrapper` styled component.
+ */
+
+const ContentWrapper = styled.div`
+  display: grid;
+  grid-column-gap: 8px;
+  grid-template-columns: 1fr auto;
+`;
 
 /**
  * StyledInput styled component.
@@ -33,7 +44,8 @@ const StyledInput = styled.input`
   border: none;
   color: white;
   margin: 0;
-  padding: 10px 24px;
+  padding: 0;
+  width: 100%;
 
   &::-ms-input-placeholder,
   &:-ms-input-placeholder,
@@ -55,14 +67,18 @@ const StyledInput = styled.input`
  */
 
 export const InputField = forwardRef(
-  (props: Props, ref: any): ReactElement => {
+  ({ icon, ...props }: Props, ref: any): ReactElement => {
 
     return (
       <InputWrapper>
-        <StyledInput
-          {...props}
-          ref={ref}
-        />
+        <ContentWrapper>
+          <StyledInput
+            {...props}
+            ref={ref}
+          />
+
+          {icon}
+        </ContentWrapper>
       </InputWrapper>
     );
   }
